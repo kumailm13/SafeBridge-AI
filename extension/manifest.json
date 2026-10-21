@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "AI Firewall: Enterprise AI Guardrail & DLP",
+  "version": "1.0.0",
+  "description": "Real-time DLP inspection, PII tokenization, and prompt injection defense for ChatGPT, Claude, and Gemini.",
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://chatgpt.com/*",
+    "https://chat.openai.com/*",
+    "https://claude.ai/*",
+    "https://gemini.google.com/*",
+    "http://localhost:8000/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "AI Firewall Enterprise Status"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*",
+        "https://claude.ai/*",
+        "https://gemini.google.com/*"
+      ],
+      "js": ["content.js"],
+      "css": ["content.css"]
+    }
+  ]
+}
