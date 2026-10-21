@@ -18,11 +18,11 @@
 
 ### **Project Group Members**
 
-| Sr. No. | Student Name | Registration / Roll No. | Email Address | Contact No. | Signature |
+| Sr. No. | Student Name | Registration / Roll No. | 
 | :---: | :--- | :--- | :--- | :--- | :---: |
-| 1. | `[Student Name 1]` | `CIIT/FA21-BCE-XXX/ISB` | `student1@isb.comsats.edu.pk` | `+92-3XX-XXXXXXX` | _________ |
-| 2. | `[Student Name 2]` | `CIIT/FA21-BCE-XXX/ISB` | `student2@isb.comsats.edu.pk` | `+92-3XX-XXXXXXX` | _________ |
-| 3. | `[Student Name 3]` | `CIIT/FA21-BCE-XXX/ISB` | `student3@isb.comsats.edu.pk` | `+92-3XX-XXXXXXX` | _________ |
+| 1. | `Muhammad Kumail` | `CIIT/FA21-BCE-072/ISB` | 
+| 2. | `Abdullah Ali Shah` | `CIIT/FA23-BCE-117/ISB` | 
+
 
 ---
 
