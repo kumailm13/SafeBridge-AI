@@ -18,20 +18,19 @@
 
 ### **Project Group Members**
 
-| Sr. No. | Student Name | Registration / Roll No. | 
-| :---: | :--- | :--- | :--- | :--- | :---: |
-| 1. | `Muhammad Kumail` | `CIIT/FA21-BCE-072/ISB` | 
-| 2. | `Abdullah Ali Shah` | `CIIT/FA23-BCE-117/ISB` | 
-
+| Sr. No. | Student Name | Registration / Roll No. |
+| :--- | :--- | :--- |
+| 1. | `Muhammad Kumail` | `CIIT/FA23-BCE-072/ISB` |
+| 2. | `Abdullah Ali Shah` | `CIIT/FA23-BCE-117/ISB` |
 
 ---
 
 ### **Supervisory Team**
 
-| Role | Name | Designation | Department | Email & Contact | Signature |
-| :--- | :--- | :--- | :--- | :--- | :---: |
-| **Supervisor** | `[Supervisor Name]` | `[Assistant Professor / Associate Professor / Professor]` | Computer Engineering | `email@comsats.edu.pk`<br>`+92-51-XXXXXXX` | _________ |
-| **Co-Supervisor** *(Optional)* | `[Co-Supervisor Name]` | `[Lecturer / Assistant Professor]` | Computer Engineering | `email@comsats.edu.pk`<br>`+92-51-XXXXXXX` | _________ |
+| Role | Name | Designation | Department | Email & Contact |
+| :--- | :--- | :--- | :--- | :--- |
+| **Supervisor** | `Sir Dilshad Sabbir` | `Assistant Professor` | Computer Engineering | `dilshad.sabir@comsats.edu.pk` | |
+
 
 ---
 
@@ -300,32 +299,3 @@ Semester 8 (FYP-II):
 7. Tiangolo, S. (2018). *FastAPI: Modern, Fast (High-Performance), Web Framework for Building APIs with Python*. https://fastapi.tiangolo.com/
 
 ---
-
-## 13. Project Signatures & Approval Block
-
-### Submitted By:
-| Sr. No. | Student Name | Registration No. | Signature | Date |
-| :---: | :--- | :--- | :---: | :---: |
-| 1. | `[Student Name 1]` | `CIIT/FA21-BCE-XXX/ISB` | ____________________ | ___ / ___ / 202X |
-| 2. | `[Student Name 2]` | `CIIT/FA21-BCE-XXX/ISB` | ____________________ | ___ / ___ / 202X |
-| 3. | `[Student Name 3]` | `CIIT/FA21-BCE-XXX/ISB` | ____________________ | ___ / ___ / 202X |
-
-<br>
-
-### Endorsed & Approved By:
-
-**Supervisor Name & Designation:** __________________________________________________  
-**Email:** ___________________________________ **Cell No:** __________________________  
-**Signature:** _______________________________ **Date:** ___ / ___ / 202X  
-
-<br>
-
-**Co-Supervisor Name & Designation:** _______________________________________________  
-**Email:** ___________________________________ **Cell No:** __________________________  
-**Signature:** _______________________________ **Date:** ___ / ___ / 202X  
-
-<br>
-
-**FYP Committee Convener / Head of Department (HOD):**  
-**Name & Designation:** ____________________________________________________________  
-**Signature & Official Stamp:** _____________________________ **Date:** ___ / ___ / 202X  
