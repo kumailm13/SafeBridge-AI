@@ -156,7 +156,10 @@ class AIFilter:
         return min(round(score, 4), 0.99)
 
 
-from injection import injection_guard
+try:
+    from backend.injection import injection_guard
+except ImportError:
+    from injection import injection_guard
 
 class FirewallFilter:
     def __init__(self):

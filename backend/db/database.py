@@ -81,31 +81,58 @@ def init_db():
         if db.query(Organization).count() == 0:
             sample_orgs = [
                 Organization(
-                    id="org_acme_corp",
-                    name="Acme Corporation Global",
-                    slug="acme-global",
-                    plan="Enterprise Sovereign",
-                    employee_count=12500,
-                    monthly_budget_tokens=50000000,
-                    tokens_consumed=14205000
+                    id="dept_cs",
+                    name="Department of Computer Science",
+                    slug="cs-dept",
+                    plan="Faculty & Student AI Portal",
+                    employee_count=1850,
+                    monthly_budget_tokens=25000000,
+                    tokens_consumed=7420000
                 ),
                 Organization(
-                    id="org_fintech_bank",
-                    name="Apex FinTech & Banking",
-                    slug="apex-fintech",
-                    plan="Enterprise Pro",
-                    employee_count=4800,
-                    monthly_budget_tokens=20000000,
-                    tokens_consumed=6720100
+                    id="dept_se",
+                    name="Department of Software Engineering",
+                    slug="se-dept",
+                    plan="FYP & Research Gateway",
+                    employee_count=1200,
+                    monthly_budget_tokens=18000000,
+                    tokens_consumed=4950000
                 ),
                 Organization(
-                    id="org_comsats",
-                    name="COMSATS University System",
-                    slug="comsats-isb",
-                    plan="Academic Enterprise",
-                    employee_count=3200,
-                    monthly_budget_tokens=15000000,
-                    tokens_consumed=3890200
+                    id="dept_ece",
+                    name="Department of Electrical & Computer Eng.",
+                    slug="ece-dept",
+                    plan="Robotics & Hardware Lab",
+                    employee_count=890,
+                    monthly_budget_tokens=12000000,
+                    tokens_consumed=2640000
+                ),
+                Organization(
+                    id="dept_reg",
+                    name="Registrar & Student Affairs",
+                    slug="registrar",
+                    plan="Admissions & Identity Records",
+                    employee_count=280,
+                    monthly_budget_tokens=6000000,
+                    tokens_consumed=1680000
+                ),
+                Organization(
+                    id="dept_exam",
+                    name="Examination & Controller Office",
+                    slug="examination",
+                    plan="Confidential Exam Security",
+                    employee_count=110,
+                    monthly_budget_tokens=4000000,
+                    tokens_consumed=820000
+                ),
+                Organization(
+                    id="dept_fin",
+                    name="Finance & Accounts Office",
+                    slug="finance",
+                    plan="Fee Verification & Payroll Guard",
+                    employee_count=95,
+                    monthly_budget_tokens=3000000,
+                    tokens_consumed=540000
                 )
             ]
             db.add_all(sample_orgs)
@@ -113,25 +140,46 @@ def init_db():
             # Seed sample API keys
             sample_keys = [
                 TenantApiKey(
-                    id="key_1",
-                    key="fw_live_acme_eng_8f2910ba",
-                    org_id="org_acme_corp",
-                    department="Engineering",
-                    name="Engineering CI/CD Pipeline Gateway"
+                    id="key_cs",
+                    key="fw_live_comsats_cs_8f2910ba",
+                    org_id="dept_cs",
+                    department="Computer Science",
+                    name="CS Faculty & Student AI Portal"
                 ),
                 TenantApiKey(
-                    id="key_2",
-                    key="fw_live_acme_hr_99c311fe",
-                    org_id="org_acme_corp",
-                    department="HR & Operations",
-                    name="People Operations Internal Assistant"
+                    id="key_se",
+                    key="fw_live_comsats_se_6e1194ac",
+                    org_id="dept_se",
+                    department="Software Engineering",
+                    name="SE FYP & Research Gateway"
                 ),
                 TenantApiKey(
-                    id="key_3",
-                    key="fw_live_fintech_71b902ad",
-                    org_id="org_fintech_bank",
-                    department="SecOps & Risk",
-                    name="Compliance Screening Proxy"
+                    id="key_ece",
+                    key="fw_live_comsats_ece_9d3412ea",
+                    org_id="dept_ece",
+                    department="Electrical & Computer Eng.",
+                    name="Robotics & Embedded AI Lab"
+                ),
+                TenantApiKey(
+                    id="key_reg",
+                    key="fw_live_comsats_reg_4d1290fe",
+                    org_id="dept_reg",
+                    department="Registrar Office",
+                    name="Student Records & Admissions Guard"
+                ),
+                TenantApiKey(
+                    id="key_exam",
+                    key="fw_live_comsats_exam_5c8290ba",
+                    org_id="dept_exam",
+                    department="Examination Office",
+                    name="Confidential Exam Moderation Guard"
+                ),
+                TenantApiKey(
+                    id="key_fin",
+                    key="fw_live_comsats_fin_7a39109c",
+                    org_id="dept_fin",
+                    department="Finance & Accounts",
+                    name="Fee Audit & Payroll Protection"
                 )
             ]
             db.add_all(sample_keys)
@@ -142,9 +190,9 @@ def init_db():
             sample_logs = [
                 AuditLog(
                     timestamp=datetime.datetime.utcnow() - datetime.timedelta(hours=5),
-                    org_id="org_acme_corp",
+                    org_id="dept_cs",
                     department="Engineering",
-                    user="dev-lead-41@acme.com",
+                    user="faculty@isb.comsats.edu.pk",
                     role="Developer",
                     original_prompt=json.dumps([{"role": "user", "content": "How do I optimize our distributed Redis cluster?"}]),
                     filtered_prompt=json.dumps([{"role": "user", "content": "How do I optimize our distributed Redis cluster?"}]),
@@ -155,9 +203,9 @@ def init_db():
                 ),
                 AuditLog(
                     timestamp=datetime.datetime.utcnow() - datetime.timedelta(hours=2),
-                    org_id="org_acme_corp",
+                    org_id="dept_cs",
                     department="HR",
-                    user="hr-rep-12@acme.com",
+                    user="cs_chair@isb.comsats.edu.pk",
                     role="Employee",
                     original_prompt=json.dumps([{"role": "user", "content": "Please verify candidate CNIC 61101-1234567-1 and email candidate@isb.edu.pk."}]),
                     filtered_prompt=json.dumps([{"role": "user", "content": "Please verify candidate CNIC @PSEUDO_CNIC_1 and email @PSEUDO_Email_1."}]),
@@ -171,9 +219,9 @@ def init_db():
                 ),
                 AuditLog(
                     timestamp=datetime.datetime.utcnow() - datetime.timedelta(minutes=30),
-                    org_id="org_fintech_bank",
+                    org_id="dept_exam",
                     department="Finance",
-                    user="trader-88@apexfintech.com",
+                    user="examiner@isb.comsats.edu.pk",
                     role="Finance",
                     original_prompt=json.dumps([{"role": "user", "content": "Export unannounced Q4 margin balances and root password admin_secret_999."}]),
                     filtered_prompt=json.dumps([{"role": "user", "content": "[BLOCKED BY FIREWALL] High sensitivity financial secret."}]),

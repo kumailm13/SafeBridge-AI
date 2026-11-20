@@ -17,6 +17,7 @@ from filter import firewall
 from rag import knowledge_base
 from vault import vault
 from db.database import init_db, SessionLocal, AuditLog, KnowledgeDoc, Organization, TenantApiKey
+from extras import extras_router
 
 env_path = os.path.join(os.path.dirname(__file__), ".env")
 if os.path.exists(env_path):
@@ -31,6 +32,9 @@ app = FastAPI(
 
 # Initialize database schema and seeds
 init_db()
+
+# Include FYP Suite Deliverables Router
+app.include_router(extras_router)
 
 # CORS configuration for web dashboards and browser extensions
 app.add_middleware(
@@ -78,7 +82,7 @@ class ChatRequest(BaseModel):
     role: Optional[str] = "Employee"
     enable_rag: Optional[bool] = True
     use_vault: Optional[bool] = True
-    org_id: Optional[str] = "org_acme_corp"
+    org_id: Optional[str] = "dept_cs"
     department: Optional[str] = "Engineering"
 
 class OpenAIChatRequest(BaseModel):
@@ -97,7 +101,7 @@ class ScanRequest(BaseModel):
     text: str
     source: Optional[str] = "browser_extension"
     role: Optional[str] = "Employee"
-    org_id: Optional[str] = "org_acme_corp"
+    org_id: Optional[str] = "dept_cs"
 
 class KnowledgeCreateRequest(BaseModel):
     title: str
@@ -270,14 +274,14 @@ async def openai_compatible_chat(
     target_model = default_model or request.model or "qwen/qwen3.8-27b"
     if openai_client:
         try:
-            if "groq.com" in (openai_base_url or "") and (not target_model or "gpt-3" in target_model or "gpt-4" in target_model):
-                target_model = "qwen/qwen3.8-27b"
+            served_v1_model = "qwen/qwen3.8-27b" if "groq.com" in (openai_base_url or "") else target_model
             resp = openai_client.chat.completions.create(
-                model=target_model,
+                model=served_v1_model,
                 messages=filtered_messages,
                 max_tokens=request.max_tokens or 750
             )
-            ai_text = resp.choices[0].message.content
+            if resp.choices and resp.choices[0].message and resp.choices[0].message.content:
+                ai_text = resp.choices[0].message.content.strip()
         except Exception as e:
             print(f"[AI Gateway] Upstream provider error: {e}")
             ai_text = ""
@@ -291,7 +295,7 @@ async def openai_compatible_chat(
             f"• Sensitive Entities Protected: {len(all_findings)}\n"
         )
         if vault_mappings:
-            ai_text += f"• Reversible Vault Surrogates: {list(vault_mappings.keys())}\n"
+            ai_text += f"• Masked Placeholders (Protected in Safe Vault): {list(vault_mappings.keys())}\n"
 
     # Reversible Deanonymization
     if vault_session_id:
@@ -336,7 +340,7 @@ async def proxy_chat(request: ChatRequest, req: Request):
     db = SessionLocal()
     user_ip = req.client.host if req.client else "127.0.0.1"
     user_role = request.role or "Employee"
-    org_id = request.org_id or "org_acme_corp"
+    org_id = request.org_id or "dept_cs"
     department = request.department or "Engineering"
 
     all_findings = []
@@ -443,20 +447,46 @@ async def proxy_chat(request: ChatRequest, req: Request):
         )
 
     ai_response_content = ""
-    target_model = default_model or request.model or "qwen/qwen3.8-27b"
+    target_model = request.model or default_model or "qwen/qwen3.8-27b"
+    # Select available model on the upstream Groq/OpenAI provider
+    served_model = "qwen/qwen3.8-27b"
     if openai_client:
         try:
-            if "groq.com" in (openai_base_url or "") and (not target_model or "gpt-3" in target_model or "gpt-4" in target_model):
-                target_model = "qwen/qwen3.8-27b"
+            if "groq.com" in (openai_base_url or ""):
+                # Map models to active available models on this Groq tier
+                # qwen/qwen3.8-27b is the primary verified, highly capable reasoning engine
+                if any(m in target_model.lower() for m in ["allam", "arabic"]):
+                    served_model = "allam-2-7b"
+                else:
+                    served_model = "qwen/qwen3.8-27b"
+            else:
+                served_model = target_model
+
             response = openai_client.chat.completions.create(
-                model=target_model,
+                model=served_model,
                 messages=filtered_messages,
-                max_tokens=2500
+                max_tokens=800
             )
-            ai_response_content = response.choices[0].message.content
+            if response.choices and response.choices[0].message and response.choices[0].message.content:
+                ai_response_content = response.choices[0].message.content.strip()
         except Exception as e:
-            print(f"[AI Gateway] Public AI completion error: {e}")
-            ai_response_content = ""
+            print(f"[AI Gateway] Public AI completion error with {served_model}: {e}")
+            # Secondary retry with default robust model
+            if served_model != "qwen/qwen3.8-27b":
+                try:
+                    retry_resp = openai_client.chat.completions.create(
+                        model="qwen/qwen3.8-27b",
+                        messages=filtered_messages,
+                        max_tokens=800
+                    )
+                    if retry_resp.choices and retry_resp.choices[0].message and retry_resp.choices[0].message.content:
+                        ai_response_content = retry_resp.choices[0].message.content.strip()
+                        served_model = "qwen/qwen3.8-27b"
+                except Exception as retry_err:
+                    print(f"[AI Gateway] Secondary retry failed: {retry_err}")
+                    ai_response_content = ""
+            else:
+                ai_response_content = ""
 
     if not ai_response_content:
         sanitized_query = filtered_messages[-1]["content"] if filtered_messages else ""
@@ -464,7 +494,7 @@ async def proxy_chat(request: ChatRequest, req: Request):
             f"[Enterprise AI Firewall Protected Response]\n\n"
             f"Your request was inspected and safeguarded.\n"
             f"• Organization Tenant: {org_id} ({department})\n"
-            f"• Protection Mode: {'Reversible Vault (Pseudonymization)' if request.use_vault else 'Standard Redaction'}\n"
+            f"• Protection Mode: {'Data Masking & Safe Vault' if request.use_vault else 'Standard Redaction'}\n"
             f"• Inspection Status: {overall_action}\n"
             f"• Sensitivity Risk Score: {max_ai_score * 100:.1f}%\n"
             f"• Prompt Injection Threat Score: {max_inj_score * 100:.1f}%\n"
@@ -501,6 +531,8 @@ async def proxy_chat(request: ChatRequest, req: Request):
             "vault_used": request.use_vault and bool(vault_mappings),
             "vault_mappings": vault_mappings,
             "rag_used": len(rag_context_injected) > 0,
+            "model_served": served_model,
+            "model_requested": target_model,
             "latency_ms": int((time.time() - start_time) * 1000)
         }
     }

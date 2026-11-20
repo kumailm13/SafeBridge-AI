@@ -12,8 +12,8 @@ class PromptInjectionDetector:
     def __init__(self):
         # Known Jailbreak and System Override Signatures
         self.jailbreak_patterns = [
-            (r"(?i)\bignore\s+(all\s+)?(previous|prior|above)\s+(instructions|prompts|directives|rules)\b", 0.95, "Instruction Override"),
-            (r"(?i)\bdisregard\s+(all\s+)?(previous|prior|above)\s+(instructions|rules|guidelines)\b", 0.95, "Instruction Override"),
+            (r"(?i)\bignore\s+(all\s+)?(previous|prior|above)\s+(instructions|prompts|directives|rules|system\s+prompts?)\b", 0.95, "Instruction Override"),
+            (r"(?i)\bdisregard\s+(all\s+)?(previous|prior|above)\s+(instructions|rules|guidelines|prompts|system\s+prompts?)\b", 0.95, "Instruction Override"),
             (r"(?i)\byou\s+are\s+now\s+(in\s+developer\s+mode|dan|chaosbot|unfiltered|jailbroken)\b", 0.95, "Persona / Jailbreak Hijack"),
             (r"(?i)\bdo\s+anything\s+now\b", 0.90, "DAN Jailbreak Signature"),
             (r"(?i)\bact\s+as\s+(an\s+unfiltered|an\s+unrestricted|a\s+rogue)\s+(ai|model|assistant)\b", 0.90, "Unrestricted Persona Request"),
@@ -34,6 +34,17 @@ class PromptInjectionDetector:
             (r"(?i)(<\s*system\s*>|<\s*\/system\s*>|\[\s*system\s*\])", 0.85, "System Delimiter Smuggling"),
             (r"(?i)(###\s*(instruction|system|override)\s*:)", 0.82, "Markdown Header Injection"),
             (r"(?i)(assistant\s*:\s*sure,\s*i\s+can\s+bypass)", 0.90, "Few-Shot Response Forgery"),
+        ]
+
+        # Cyber Attack, Exploitation & Unauthorized Access Signatures (OWASP LLM & Security Violations)
+        self.cyber_attack_patterns = [
+            (r"(?i)\b(hack|crack|pwn|exploit|infiltrate|breach|compromise)\s+([a-zA-Z0-9_.-]+\b|server|database|network|portal|system|admin|comsats|website|account|credentials|wifi|password)\b", 0.96, "Cyber Attack & System Exploitation"),
+            (r"(?i)\b(how\s+to\s+)?(hack|crack\s+password|ddos|sql\s*injection|sqli|deface)\b", 0.95, "Cyber Attack Attempt"),
+            (r"(?i)\b(sql\s*injection|sqli|xss\s*payload|cross-site\s*scripting|remote\s*code\s*execution|rce|zero-day|0-day)\b", 0.95, "Exploit / Vulnerability Attack"),
+            (r"(?i)\b(ddos|dos\s*attack|brute\s*force|credential\s*stuffing|port\s*scan|packet\s*sniffing|arp\s*spoofing)\b", 0.95, "Network Attack Attempt"),
+            (r"(?i)\b(create|generate|write|code|make)\s+(a\s+)?(keylogger|ransomware|trojan|rootkit|malware|botnet|reverse\s*shell|backdoor|phishing\s*(page|script|email))\b", 0.98, "Malware / Cyber Weapon Generation"),
+            (r"(?i)\b(steal|dump|exfiltrate|intercept)\s+(passwords?|hashes|tokens?|database|records|private\s*keys?)\b", 0.95, "Data Exfiltration Threat"),
+            (r"(?i)\b(how\s+to\s+)?(bypass\s+firewall|bypass\s+authentication|gain\s+unauthorized\s+access|steal\s+credentials)\b", 0.95, "Unauthorized Access Attempt"),
         ]
 
     def deobfuscate(self, text: str) -> Tuple[str, List[Dict[str, Any]]]:
@@ -106,7 +117,8 @@ class PromptInjectionDetector:
         all_rules = (
             self.jailbreak_patterns +
             self.exfiltration_patterns +
-            self.smuggling_patterns
+            self.smuggling_patterns +
+            self.cyber_attack_patterns
         )
 
         for pattern, weight, category in all_rules:

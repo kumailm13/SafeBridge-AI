@@ -57,8 +57,8 @@ class CompanyKnowledge:
                 "metadata": {"category": "Security", "department": "IT"}
             },
             {
-                "title": "Employee Reimbursement SOP",
-                "text": "Finance Dept SOP 2026: Official travel and equipment expenses require pre-approval from department heads. Claims must be submitted via the finance portal within 15 calendar days.",
+                "title": "Employee Expense & Reimbursement Policy",
+                "text": "Finance Dept Policy 2026: Official travel and equipment expenses require pre-approval from department heads. Claims must be submitted via the finance portal within 15 calendar days.",
                 "metadata": {"category": "Finance", "department": "HR"}
             },
             {
